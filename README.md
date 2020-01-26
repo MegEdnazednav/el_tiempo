@@ -11,7 +11,6 @@ bundle install
 ## USAGE
 ```
 ruby eltiempo.rb -today 'Gavà'
-ruby eltiempo.rb -av_max 'Gavà'
-ruby eltiempo.rb -av_min 'Gavà'
+ruby eltiempo.rb -av_max 'Bar'
+ruby eltiempo.rb -av_min 'lona'
 ```
-

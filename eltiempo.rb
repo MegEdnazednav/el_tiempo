@@ -13,6 +13,20 @@ class ReportsController
     location = get_right_location(location_ids)
     present_answer(location)
   end
+  def get_right_location(ids)
+    if ids.length == 0
+      p "We don't have weather info about this location"
+      exit
+    elsif ids.length > 1
+      ids.each_with_index do |id, index|
+        puts "#{index + 1} - #{id[1]}"
+      end
+      user_choice = STDIN.gets.chomp.to_i - 1
+      return ids[user_choice]
+    else
+      return ids[0]
+    end
+  end
     case report_type
     when "-today"
       p weather_parser.get_today_weather(location_id)

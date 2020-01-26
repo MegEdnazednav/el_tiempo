@@ -3,21 +3,31 @@ require_relative "./weather_service"
 
 class ReportsController
 
-  def initialize(report_type, location_name, weather_service)
-    @report_type = report_type
-    @location_name = location_name
+  def initialize(weather_service)
     @weather_service = weather_service
   end
 
-  def call
-    location_ids = weather_service.get_location_ids(location_name)
+  def call(arguments)
+    check_if_arguments_correct(arguments)
+    location_ids = weather_service.get_location_ids(arguments[1])
     location = get_right_location(location_ids)
-    present_answer(location)
+    present_answer(arguments[0], location)
   end
 
   private
 
-  attr_reader :report_type, :location_name, :weather_service
+  attr_reader :weather_service
+
+  def check_if_arguments_correct(arguments)
+    command_possibilities = [ "-av_min", "-av_max", "-today"]
+    if arguments.length != 2
+      p "Please enter two arguments"
+      exit
+    elsif !command_possibilities.include?(arguments[0])
+      p "Please use a command from the list: #{command_possibilities.join(", ")}"
+      exit
+    end
+  end
 
   def get_right_location(ids)
     if ids.length == 0
@@ -34,7 +44,7 @@ class ReportsController
     end
   end
 
-  def present_answer(location)
+  def present_answer(report_type, location)
     case report_type
     when "-today"
       answer = weather_service.get_today_weather(location[0])
@@ -50,4 +60,4 @@ class ReportsController
   end
 end
 
-ReportsController.new(ARGV[0], ARGV[1], WeatherService.new).call
+ReportsController.new(WeatherService.new).call(ARGV)

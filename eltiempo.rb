@@ -1,11 +1,12 @@
-require_relative "./weather_parser"
+#!/usr/bin/env ruby
+require_relative "./weather_service"
 
 class ReportsController
 
-  def initialize(report_type, location_name, weather_parser)
+  def initialize(report_type, location_name, weather_service)
     @report_type = report_type
     @location_name = location_name
-    @weather_parser = weather_parser
+    @weather_service = weather_service
   end
 
   def call
@@ -13,6 +14,11 @@ class ReportsController
     location = get_right_location(location_ids)
     present_answer(location)
   end
+
+  private
+
+  attr_reader :report_type, :location_name, :weather_service
+
   def get_right_location(ids)
     if ids.length == 0
       p "We don't have weather info about this location"
@@ -42,11 +48,6 @@ class ReportsController
       p "This week's average #{answer[:type]} in #{location[1]} is #{answer[:temperature]}°C"
     end
   end
-
-  private
-
-  attr_reader :report_type, :location_name, :weather_parser
 end
 
-parser = ReportsController.new(ARGV[0], ARGV[1], WeatherParser.new)
-parser.call
+ReportsController.new(ARGV[0], ARGV[1], WeatherService.new).call

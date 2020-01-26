@@ -27,15 +27,19 @@ class ReportsController
       return ids[0]
     end
   end
+
+  def present_answer(location)
     case report_type
     when "-today"
-      p weather_parser.get_today_weather(location_id)
+      answer = weather_service.get_today_weather(location[0])
+      p "Today's minimum in #{location[1]} is #{answer[:min]}°C, while the maximum is #{answer[:max]}°C"
+      p "There is a #{answer[:wind]} and #{answer[:weather]}"
     when "-av_max"
-      answer = weather_parser.get_average_temperature("max", location_id)
-      p "This week's average #{answer[:type]} in #{location_name} is #{answer[:temperature]}°C"
+      answer = weather_service.get_average_temperature(:max, location[0])
+      p "This week's average #{answer[:type]} in #{location[1]} is #{answer[:temperature]}°C"
     when "-av_min"
-      answer = weather_parser.get_average_temperature("min", location_id)
-      p "This week's average #{answer[:type]} in #{location_name} is #{answer[:temperature]}°C"
+      answer = weather_service.get_average_temperature(:min, location[0])
+      p "This week's average #{answer[:type]} in #{location[1]} is #{answer[:temperature]}°C"
     end
   end
 

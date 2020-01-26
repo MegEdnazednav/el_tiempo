@@ -10,8 +10,10 @@ class WeatherService
 
   DIVISION = 102 #for only the cities in the province of Barcelona
 
+  API_KEY = "zdo2c683olan"
+
   def get_location_ids(location_name)
-    location_file = RestClient.get "http://api.tiempo.com/index.php?api_lang=en&division=#{DIVISION}&affiliate_id=1f95bxk4cjbu"
+    location_file = RestClient.get "http://api.tiempo.com/index.php?api_lang=en&division=#{DIVISION}&affiliate_id=#{API_KEY}"
     xml_location_file = Nokogiri::XML(location_file)
     location_ids = []
     xml_location_file.search('//name').each do |name|
@@ -23,7 +25,7 @@ class WeatherService
   end
 
   def get_today_weather(location)
-    xml_file = RestClient.get "http://api.tiempo.com/index.php?api_lang=en&localidad=#{location}&affiliate_id=1f95bxk4cjbu"
+    xml_file = RestClient.get "http://api.tiempo.com/index.php?api_lang=en&localidad=#{location}&affiliate_id=#{API_KEY}"
     return {
       min: extract_weather_parameters(xml_file, TYPES[:min])[0],
       max: extract_weather_parameters(xml_file, TYPES[:max])[0],
@@ -33,7 +35,7 @@ class WeatherService
   end
 
   def get_average_temperature(type, location)
-    xml_file = RestClient.get "http://api.tiempo.com/index.php?api_lang=en&localidad=#{location}&affiliate_id=1f95bxk4cjbu"
+    xml_file = RestClient.get "http://api.tiempo.com/index.php?api_lang=en&localidad=#{location}&affiliate_id=#{API_KEY}"
     weekly_temperatures = extract_weather_parameters(xml_file, TYPES[type]).map(&:to_i)
     return {
       type: TYPES[type].downcase,

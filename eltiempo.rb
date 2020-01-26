@@ -9,7 +9,10 @@ class ReportsController
   end
 
   def call
-    location_id = weather_parser.get_location_id(location_name)
+    location_ids = weather_service.get_location_ids(location_name)
+    location = get_right_location(location_ids)
+    present_answer(location)
+  end
     case report_type
     when "-today"
       p weather_parser.get_today_weather(location_id)
